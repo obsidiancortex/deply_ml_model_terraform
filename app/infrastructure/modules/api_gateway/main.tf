@@ -27,9 +27,20 @@ resource "aws_api_gateway_integration" "integration" {
 
 resource "aws_api_gateway_deployment" "example" {
   rest_api_id = aws_api_gateway_rest_api.api.id
+  // Depend on ajouter apres erreur : Error creating API Gateway Deployment: BadRequestException: No integration defined for method
+  // solution => https://stackoverflow.com/questions/65770609/terraform-error-error-creating-api-gateway-deployment-badrequestexception-no
+  depends_on = [
+        aws_api_gateway_method.method,
+        aws_api_gateway_integration.integration
+      ]
 
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.api.body))
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_rest_api.api.body,
+      aws_api_gateway_rest_api.api.id,
+      aws_api_gateway_resource.resource.id,
+      aws_api_gateway_method.method.http_method
+      ]))
   }
 
   lifecycle {

@@ -7,13 +7,13 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "dev-terraform-state-bucket"
+    bucket = "dev-terraform-state-bucket-801295807338"
     key    = "test_service_dev"
   }
 }
 
 provider "aws" {
-  region  = "eu-central-1"
+  region  = "eu-west-1"
 }
 
 module "lambda" {
