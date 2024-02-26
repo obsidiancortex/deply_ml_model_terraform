@@ -48,18 +48,17 @@ resource "aws_lambda_function" "test_service_lambda_function" {
   timeout = 60
 }
 
+  resource "aws_ecr_repository" "test_service_ecr_repo" {
+  #name                 = "${var.environment}-test_service_ecr_repo"
+  name = local.ecr_repository_name
+  image_tag_mutability = "MUTABLE"
+}
 
 resource "null_resource" "ecr_image" {
   triggers = {
     python_file = md5(file("../../../src/app.py"))
     docker_file = md5(file("../../../src/Dockerfile"))
   }
-
-  resource "aws_ecr_repository" "test_service_ecr_repo" {
-  #name                 = "${var.environment}-test_service_ecr_repo"
-  name = local.ecr_repository_name
-  image_tag_mutability = "MUTABLE"
-}
 
 
   provisioner "local-exec" {
